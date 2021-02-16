@@ -1,24 +1,22 @@
-import logo from './logo.svg';
+import { useReducer, useEffect } from 'react'
+import { AppContext, appInitialState, appReducer, actionTypes, stateTypes } from './App.context'
+import { Discussion } from './pages/Discussion/Discussion'
+
 import './App.css';
 
 function App() {
+  const [state, dispatch] = useReducer(appReducer, appInitialState)
+
+  useEffect(() => {
+    dispatch({ type: actionTypes.AUTHENTICATE })
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppContext.Provider value={{ state, dispatch }}>
+      {
+        state.authState === stateTypes.AUTHENTICATED ? <Discussion /> : <div>Unauthenticated</div>
+      }
+    </AppContext.Provider>
   );
 }
 
