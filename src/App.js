@@ -1,6 +1,7 @@
 import { useReducer, useEffect } from 'react'
 import { AppContext, appInitialState, appReducer, actionTypes, stateTypes } from './App.context'
 import { Discussion } from './pages/Discussion/Discussion'
+import 'antd/dist/antd.css';
 
 import './App.css';
 
