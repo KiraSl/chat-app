@@ -6,6 +6,7 @@ const actionTypes = {
   ADD_MESSAGE: 'ADD_MESSAGE',
   LOAD_MESSAGES: 'LOAD_MESSAGES',
   RESET_STATE_TYPE: 'RESET_STATE_TYPE',
+  UPDATE_COMMENT: 'UPDATE_COMMENT',
 }
 
 const stateTypes = {
@@ -16,6 +17,7 @@ const stateTypes = {
 }
 
 const discussionInitialState = {
+  comment: '',
   stateType: stateTypes.LOADING_MESSAGES,
   messages: [],
 }
@@ -23,10 +25,14 @@ const discussionInitialState = {
 const discussionReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.ADD_MESSAGE:
-      return {
-        ...state,
-        stateType: action.message ? stateTypes.SUCCESSFULLY_ADDED_MESSAGE : stateTypes.FAILED_TO_ADD_MESSAGE,
-        messages: action.message ? [...state.messages, action.message] : state.messages,
+      return action.message ? {
+        stateType: stateTypes.SUCCESSFULLY_ADDED_MESSAGE,
+        messages: [...state.messages, action.message],
+        comment: ''
+      } : {
+        stateType: stateTypes.FAILED_TO_ADD_MESSAGE,
+        messages: state.messages,
+        comment: state.comment,
       }
     case actionTypes.LOAD_MESSAGES:
       return {
@@ -39,7 +45,11 @@ const discussionReducer = (state, action) => {
         ...state,
         stateType: stateTypes.LOADED_MESSAGES,
       }
-
+    case actionTypes.UPDATE_COMMENT:
+      return {
+        ...state,
+        comment: action.comment,
+      }
     default:
       console.log('Action type not found')
   }

@@ -1,16 +1,18 @@
-import React, { useContext, useState } from 'react'
-import { Button, Input, Space } from 'antd';
+import React, { useContext } from 'react'
+import { Button, Input, Space } from 'antd'
 import { SendOutlined } from '@ant-design/icons';
-import {  actionTypes, DiscussionContext } from '../Discussion.context'
+import { actionTypes, DiscussionContext } from '../Discussion.context'
+import { AppContext } from '../../../App.context'
+
 
 const { TextArea } = Input;
 
 const AddComment = () => {
-  const { dispatch } = useContext(DiscussionContext)
-  const [comment, setComment] = useState('')
+  const { state: { comment }, dispatch } = useContext(DiscussionContext)
+  const { state: { user }} = useContext(AppContext)
 
   const handleInputChange = (e) => {
-    setComment(e.target.value)
+    dispatch({ type: actionTypes.UPDATE_COMMENT, comment: e.target.value })
   }
 
   const handleAddComment = async () => {
@@ -19,16 +21,15 @@ const AddComment = () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ comment, author: 'Kira' })
+      body: JSON.stringify({ comment, author: user.name })
     })
+
     let message
-    console.log('response', response)
+
     if (response.status === 200) {
       message = await response.json()
-      setComment('')
     }
-    // const message = await response.json()
-    console.log('comment', comment)
+
     dispatch({ type: actionTypes.ADD_MESSAGE, message })
   }
 

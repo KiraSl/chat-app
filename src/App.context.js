@@ -13,6 +13,7 @@ const stateTypes = {
 
 const appInitialState = {
   authState: stateTypes.UNAUTHENTICATED,
+  user: {},
 }
 
 const appReducer = (state, action) => {
@@ -20,7 +21,10 @@ const appReducer = (state, action) => {
     case actionTypes.AUTHENTICATE:
       return {
         authState: stateTypes.AUTHENTICATED,
+        user: action.user,
       }
+    default:
+      console.log('Action type not found')
   }
 }
 

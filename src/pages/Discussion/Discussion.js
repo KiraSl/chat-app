@@ -2,7 +2,7 @@ import React, { useReducer, useEffect } from 'react'
 import { DiscussionContext, discussionInitialState, discussionReducer, actionTypes, stateTypes } from './Discussion.context'
 import { Comment } from './Comment/Comment'
 import { AddComment } from './AddComment/AddComment'
-import { Divider, message } from 'antd'
+import { Divider, message, Skeleton } from 'antd'
 
 const Discussion = () => {
   const [state, dispatch] = useReducer(discussionReducer, discussionInitialState)
@@ -23,15 +23,14 @@ const Discussion = () => {
     if (state.stateType === stateTypes.FAILED_TO_ADD_MESSAGE) {
       message.error('Failed to add a message', 2)
     }
-    dispatch({ type: actionTypes.RESET_STATE_TYPE })
+    if (state.messages.length) {
+      dispatch({ type: actionTypes.RESET_STATE_TYPE })
+    }
   }, [state.messages, state.stateType])
-
-  if (state.stateType === stateTypes.LOADING_MESSAGES) {
-    return <div>Loading</div>
-  }
 
   return (
     <DiscussionContext.Provider value={{ state, dispatch }}>
+      {state.stateType === stateTypes.LOADING_MESSAGES && <Skeleton avatar paragraph={{ rows: 1 }} />}
       {state.messages.map(message => (
         <Comment {...message} key={message.createdAt} />
       ))}
