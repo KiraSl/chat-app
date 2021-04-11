@@ -7,7 +7,7 @@ import { AppContext } from '../../../App.context'
 
 const { TextArea } = Input;
 
-const AddComment = () => {
+const AddComment = ({ socket }) => {
   const { state: { comment }, dispatch } = useContext(DiscussionContext)
   const { state: { user }} = useContext(AppContext)
 
@@ -24,13 +24,15 @@ const AddComment = () => {
       body: JSON.stringify({ comment, author: user.name })
     })
 
-    let message
+    socket.send('Hey how are you?')
 
-    if (response.status === 200) {
-      message = await response.json()
-    }
+    // let message
 
-    dispatch({ type: actionTypes.ADD_MESSAGE, message })
+    // if (response.status === 200) {
+    //   message = await response.json()
+    // }
+
+    // dispatch({ type: actionTypes.ADD_MESSAGE, message })
   }
 
 

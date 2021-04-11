@@ -4,6 +4,14 @@ import { Comment } from './Comment/Comment'
 import { AddComment } from './AddComment/AddComment'
 import { Divider, message, Skeleton } from 'antd'
 
+const socket = new WebSocket('ws://localhost:8082')
+
+socket.addEventListener('open', () => {
+  console.log('We are connected!!')
+})
+
+
+
 const Discussion = () => {
   const [state, dispatch] = useReducer(discussionReducer, discussionInitialState)
 
@@ -14,6 +22,12 @@ const Discussion = () => {
       dispatch({ type: actionTypes.LOAD_MESSAGES, messages })
     }
     fetchMessages()
+
+    socket.addEventListener('message', messageEvent => {
+      console.log('e', messageEvent.data)
+
+      dispatch({ type: actionTypes.ADD_MESSAGE, message: JSON.parse(messageEvent.data) })
+    })
   }, [])
 
   useEffect(() => {
@@ -28,6 +42,7 @@ const Discussion = () => {
     }
   }, [state.messages, state.stateType])
 
+
   return (
     <DiscussionContext.Provider value={{ state, dispatch }}>
       {state.stateType === stateTypes.LOADING_MESSAGES && <Skeleton avatar paragraph={{ rows: 1 }} />}
@@ -35,7 +50,7 @@ const Discussion = () => {
         <Comment {...message} key={message.createdAt} />
       ))}
       <Divider />
-      <AddComment />
+      <AddComment socket={socket} />
     </DiscussionContext.Provider>
   )
 }
